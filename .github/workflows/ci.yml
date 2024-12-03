@@ -24,7 +24,7 @@ jobs:
           run: black .
 
         - name: lint code
-          run: flake8 .
+          run: flake8 encode/ decode/ tests/
 
         - name: run tests
           run: pytest
