@@ -1,4 +1,4 @@
-from encode.encode import add
+from lzss.compress import add
 
 
 def test_add():

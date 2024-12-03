@@ -10,6 +10,8 @@ TODO:
 - [ ] tests
 - [ ] bit rate
 
+## Usage
+
 ## Local development
 
 1. Install virtualenv if you don't have it
@@ -42,7 +44,13 @@ pip install -r requirements.txt
 pytest
 ```
 
-6. (Optional) Safe new packages
+6. Build lzss package
+
+```bash
+python3 setup.py sdist bdist_wheel && pip install .
+```
+
+7. (Optional) Safe new packages
 
 ```bash
 pip freeze > requirements.txt
