@@ -1,0 +1,31 @@
+on:
+  push:
+    branches: [main]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+        - uses: actions/checkout@v3
+        
+        - name: set up python env
+          uses: actions/setup-python@4
+          with:
+            python-version: '3.14'
+
+        - name: install dependencies
+          run: |
+            python3 -m pip install --upgrage pip
+            pip install -r requirements.txt
+
+        - name: format code
+          run: black .
+
+        - name: lint code
+          run: flake8 .
+
+        - name: run tests
+          run: pytest
+
+        

@@ -4,7 +4,7 @@ TODO:
 
 - [X] add venv & requirements
 - [X] add dockerfile
-- [ ] create github actions
+- [x] create github actions
 - [ ] decode
 - [ ] encode
 - [ ] tests
@@ -15,7 +15,7 @@ TODO:
 1. Install virtualenv if you don't have it
 
 ```bash
-pip3 install virtualenv
+pip install virtualenv
 ```
 
 2. Create new virualenv. Make sure that command below is executed in the repository
@@ -33,16 +33,22 @@ source lzss_env/bin/activate
 4. Install all packages from requirements.txt
 
 ```bash
-pip3 install -r requirements.txt
+pip install -r requirements.txt
 ```
 
-5. (Optional) Safe new packages
+5. Run tests
+
+```
+pytest
+```
+
+6. (Optional) Safe new packages
 
 ```bash
-pip3 freeze > requirements.txt
+pip freeze > requirements.txt
 ```
 
-Deactivate a virtual env
+7. Deactivate a virtual env
 
 ```
 deactivate
