@@ -1,10 +1,8 @@
 # LZSS algorithm
 
-TODO:
-
 - [X] add venv & requirements
 - [X] add dockerfile
-- [x] create github actions
+- [X] create github actions
 - [ ] decode
 - [ ] encode
 - [ ] tests
