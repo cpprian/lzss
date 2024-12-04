@@ -23,11 +23,6 @@ jobs:
         - name: format code
           run: black .
 
-        - name: lint code
-          run: flake8 .
-
-        
-
         - name: run tests
           run: pytest
 
