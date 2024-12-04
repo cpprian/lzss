@@ -3,9 +3,10 @@
 - [X] add venv & requirements
 - [X] add dockerfile
 - [X] create github actions
-- [ ] compress
+- [X] compress
 - [ ] decompress
-- [ ] tests
+- [X] tests compress
+- [ ] tests decompress
 - [ ] bit rate
 
 ## Usage
