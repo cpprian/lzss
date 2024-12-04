@@ -162,3 +162,4 @@ cython_debug/
 #.idea/
 
 /lzss_env
+.DS_Store
