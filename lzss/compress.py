@@ -45,11 +45,9 @@ def compress(data_path: str, output_path: str = None, file_type: bool = False) -
     data = read_data(data_path, file_type)
     output_buffer = bitarray(endian="big")
 
-    print(len(data))
     i = 0
     while i < len(data):
         if match := find_duplicate(data, i):
-            print(f"dupa: {i}")
             match_distance, match_length = match
             output_buffer.append(IS_MATCH_BIT)
             dist_hi, dist_lo = (
