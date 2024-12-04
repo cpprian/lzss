@@ -3,8 +3,8 @@
 - [X] add venv & requirements
 - [X] add dockerfile
 - [X] create github actions
-- [ ] decode
-- [ ] encode
+- [ ] compress
+- [ ] decompress
 - [ ] tests
 - [ ] bit rate
 
