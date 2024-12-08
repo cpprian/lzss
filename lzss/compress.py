@@ -6,9 +6,9 @@ from lzss.utils import read_data, write_data
 
 MATCH_LENGTH_MASK: Final[int] = 15
 WINDOW_SIZE: Final[int] = 4096
+OVERFLOW_SIZE: Final[int] = 4096
 IS_MATCH_BIT: Final[bool] = 1
-LENGTH_OFFSET: Final[int] = 3
-LOOKUP_SIZE: Final[int] = 18
+LENGTH_OFFSET: Final[int] = 2
 
 
 def extract_repeat(x: bytes, num_bytes: int) -> bytes:
@@ -34,7 +34,7 @@ def find_duplicate(data: bytes, current_position: int) -> Optional[Tuple[int, in
             for search_position in range(search_start, current_position)
         )
 
-        match = next(filter(lambda x: x[1] == match_candidate, potential_matches), None)
+        match = next(filter(lambda x: (x[1] == match_candidate) and (x[0] < OVERFLOW_SIZE), potential_matches), None)
         if match:
             return match[0], len(match_candidate)
 

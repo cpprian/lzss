@@ -14,7 +14,7 @@ def read_data(data_path: str, file_type: str = "text") -> bytes:
                 data = np.array(img).flatten().tobytes()
         else:
             with open(data_path, "rb") as f:
-                data = bytearray(f.read())
+                data = f.read()
         return data
     except FileNotFoundError:
         print(f"Error: File '{data_path}' not found.")
