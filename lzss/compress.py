@@ -48,10 +48,7 @@ def compress(data_path: str, output_path: str = None, file_type: bool = False) -
             print(f"id: {i}, match: {match_distance}, length: {match_length}")
             output_buffer.append(IS_MATCH_BIT)
             dist_hi, dist_lo = match_distance >> 4, match_distance & 0xF
-
-            dat = bytes([dist_hi, (dist_lo << 4) | (match_length - LENGTH_OFFSET)])
             output_buffer.frombytes(bytes([dist_hi, (dist_lo << 4) | (match_length - LENGTH_OFFSET)]))
-            print(f"Bytes written: {len(dat)}")
             i += match_length
         else:
             output_buffer.append(not IS_MATCH_BIT)
