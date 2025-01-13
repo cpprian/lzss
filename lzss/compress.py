@@ -4,10 +4,9 @@ from bitarray import bitarray
 from lzss.utils import read_data, write_data
 
 
-MATCH_LENGTH_MASK: Final[int] = 15
-WINDOW_SIZE: Final[int] = 4096
-OVERFLOW_SIZE: Final[int] = 4096
-IS_MATCH_BIT: Final[bool] = 1
+MATCH_LENGTH_MASK: Final[int] = 0xF
+WINDOW_SIZE: Final[int] = 0xFFF
+IS_MATCH_BIT: Final[bool] = True
 LENGTH_OFFSET: Final[int] = 2
 
 
@@ -19,26 +18,23 @@ def extract_repeat(x: bytes, num_bytes: int) -> bytes:
 def find_duplicate(data: bytes, current_position: int) -> Optional[Tuple[int, int]]:
     end_of_buffer = min(current_position + MATCH_LENGTH_MASK + LENGTH_OFFSET, len(data))
     search_start = max(0, current_position - WINDOW_SIZE)
+    match_indices = [
+        i
+        for i in range(search_start, current_position)
+        if data[i] == data[current_position]
+    ]
 
-    for match_candidate_end in range(
-        end_of_buffer, current_position + LENGTH_OFFSET + 1, -1
-    ):
-        match_candidate = data[current_position:match_candidate_end]
-        potential_matches = (
-            (
-                current_position - search_position,
-                extract_repeat(
-                    data[search_position:current_position], len(match_candidate)
-                ),
-            )
-            for search_position in range(search_start, current_position)
-        )
+    for search_position in match_indices:
+        match_length = 0
+        while (
+            current_position + match_length < end_of_buffer
+            and data[search_position + match_length] == data[current_position + match_length]
+            and match_length < MATCH_LENGTH_MASK
+        ):
+            match_length += 1
 
-        match = next(filter(lambda x: (x[1] == match_candidate) and (x[0] < OVERFLOW_SIZE), potential_matches), None)
-        if match:
-            return match[0], len(match_candidate)
-
-    return None
+        if match_length >= 3:
+            return current_position - search_position, match_length
 
 
 def compress(data_path: str, output_path: str = None, file_type: bool = False) -> bytes:
@@ -49,14 +45,13 @@ def compress(data_path: str, output_path: str = None, file_type: bool = False) -
     while i < len(data):
         if match := find_duplicate(data, i):
             match_distance, match_length = match
+            print(f"id: {i}, match: {match_distance}, length: {match_length}")
             output_buffer.append(IS_MATCH_BIT)
-            dist_hi, dist_lo = (
-                match_distance >> 4,
-                (match_distance) & MATCH_LENGTH_MASK,
-            )
-            output_buffer.frombytes(
-                bytes([dist_hi, (dist_lo << 4) | (match_length - LENGTH_OFFSET)])
-            )
+            dist_hi, dist_lo = match_distance >> 4, match_distance & 0xF
+
+            dat = bytes([dist_hi, (dist_lo << 4) | (match_length - LENGTH_OFFSET)])
+            output_buffer.frombytes(bytes([dist_hi, (dist_lo << 4) | (match_length - LENGTH_OFFSET)]))
+            print(f"Bytes written: {len(dat)}")
             i += match_length
         else:
             output_buffer.append(not IS_MATCH_BIT)

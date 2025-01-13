@@ -7,12 +7,12 @@ IS_MATCH_BIT: Final[bool] = 1
 LENGTH_OFFSET: Final[int] = 2
 MATCH_LENGTH_MASK: Final[int] = 15
 
+
 def decompress(input_path: str, output_path: str) -> bytes:
     compressed_bytes = read_data(input_path)
     data = bitarray(endian="big")
     data.frombytes(compressed_bytes)
     assert data, f"Cannot decompress {compressed_bytes}"
-
 
     output_buffer = bytearray()
 
@@ -51,4 +51,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

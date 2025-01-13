@@ -1,7 +1,6 @@
-from PIL import Image
-import numpy as np
 from bitarray import bitarray
 from typing import Final
+import cv2 
 
 DEFUALT_OUTPUT_PATH: Final[str] = "./result.lzss"
 IMAGE_TYPE: Final[str] = "image"
@@ -10,8 +9,8 @@ IMAGE_TYPE: Final[str] = "image"
 def read_data(data_path: str, file_type: str = "text") -> bytes:
     try:
         if file_type == IMAGE_TYPE:
-            with Image.open(data_path) as img:
-                data = np.array(img).flatten().tobytes()
+            img = cv2.imread(data_path)
+            data = cv2.imencode(".png", img)[1].tobytes()
         else:
             with open(data_path, "rb") as f:
                 data = f.read()
@@ -26,6 +25,6 @@ def write_data(output_buffer: bitarray, output_path: str = None):
             output_path = DEFUALT_OUTPUT_PATH
 
         with open(output_path, "wb") as f:
-            f.write(output_buffer.tobytes())
+            output_buffer.tofile(f)
     except:
         print(f"Error: Can't create file {output_buffer}")
