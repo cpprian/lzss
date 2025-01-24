@@ -1,11 +1,11 @@
 import argparse
 from typing import Final, Optional, Tuple
 from bitarray import bitarray
-from lzss.utils import read_data, write_data
+from utils import read_data, write_data
 
-IS_MATCH_BIT: Final[bool] = 1
+IS_MATCH_BIT: Final[bool] = True
 LENGTH_OFFSET: Final[int] = 2
-MATCH_LENGTH_MASK: Final[int] = 15
+MATCH_LENGTH_MASK: Final[int] = 0xF
 
 
 def decompress(input_path: str, output_path: str) -> bytes:

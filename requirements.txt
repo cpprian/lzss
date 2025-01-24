@@ -4,7 +4,6 @@ click==8.1.7
 flake8==7.1.1
 iniconfig==2.0.0
 llvmlite==0.43.0
-lzss @ file:///Users/cyprian/repo/lzss
 mccabe==0.7.0
 mypy-extensions==1.0.0
 numba==0.60.0
@@ -19,3 +18,4 @@ pycodestyle==2.12.1
 pyflakes==3.2.0
 pytest==8.3.4
 setuptools==75.6.0
+matplotlib==3.9.4

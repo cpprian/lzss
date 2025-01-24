@@ -1,7 +1,7 @@
 import argparse
 from typing import Final, Optional, Tuple
 from bitarray import bitarray
-from lzss.utils import read_data, write_data
+from utils import read_data, write_data
 
 
 MATCH_LENGTH_MASK: Final[int] = 0xF
