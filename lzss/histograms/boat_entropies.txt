@@ -1,0 +1,4 @@
+Entropia: 7.1916 bits/symbol
+Entropia (rzedu 2): 16.2987 bits
+Entropia (rzedu 3): 17.7583 bits
+Srednia dlugosc bitowa kodu wyjsciowego: 8.1423 bits/symbol
