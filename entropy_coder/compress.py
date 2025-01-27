@@ -2,16 +2,56 @@ from collections import Counter, defaultdict
 import heapq
 import os
 
+from entropy_coder.huffman import HuffmanNode
 
-class HuffmanNode:
-    def __init__(self, symbol=None, frequency=0):
-        self.symbol = symbol
-        self.frequency = frequency
-        self.left = None
-        self.right = None
 
-    def __lt__(self, other):
-        return self.frequency < other.frequency
+def process_files(input_files, output_folder, analysis_file):
+    # Ensure output directory exists
+    os.makedirs(output_folder, exist_ok=True)
+
+    with open(analysis_file, "w") as analysis:
+        analysis.write("File Compression Analysis\n")
+        analysis.write("==========================\n\n")
+
+        for input_file in input_files:
+            try:
+                with open(input_file, "rb") as f:
+                    data = f.read()
+
+                original_size = len(data)
+
+                # Perform Huffman Encoding
+                encoded_data, codebook = huffman_encode(data)
+                encoded_bytes = int(encoded_data, 2).to_bytes((len(encoded_data) + 7) // 8, byteorder="big")
+
+                # Define output paths
+                file_name = os.path.basename(input_file)
+                output_path = os.path.join(output_folder, file_name.replace("_compressed.bin", "_huffman.bin"))
+                codebook_path = output_path + ".codebook"
+
+                # Save compressed data
+                with open(output_path, "wb") as f:
+                    f.write(encoded_bytes)
+
+                # Save codebook
+                with open(codebook_path, "w") as f:
+                    for symbol, code in codebook.items():
+                        f.write(f"{symbol}:{code}\n")
+
+                compressed_size = len(encoded_bytes)
+
+                # Write analysis for this file
+                compression_ratio = original_size / compressed_size if compressed_size > 0 else 0
+                analysis.write(f"File: {file_name}\n")
+                analysis.write(f"Original size: {original_size} bytes\n")
+                analysis.write(f"Compressed size: {compressed_size} bytes\n")
+                analysis.write(f"Compression ratio: {compression_ratio:.2f}\n\n")
+
+                print(f"Processed {file_name}: Compressed and saved to {output_path}.")
+
+            except Exception as e:
+                print(f"Error processing {input_file}: {e}")
+                analysis.write(f"File: {input_file} - Error: {e}\n\n")
 
 
 def build_huffman_tree(data):
@@ -53,56 +93,19 @@ def huffman_encode(data):
     return encoded_data, codebook
 
 
-def huffman_decode(encoded_data, codebook):
-    reverse_codebook = {v: k for k, v in codebook.items()}
-    decoded_data = []
-
-    buffer = ""
-    for bit in encoded_data:
-        buffer += bit
-        if buffer in reverse_codebook:
-            decoded_data.append(reverse_codebook[buffer])
-            buffer = ""
-
-    return bytes(decoded_data)
-
-
 def main():
-    input_path = "lzss_compressed/boat_compressed.bin"
-    output_path = "entropy_compressed/boat_huffman.bin"
+    input_files = [
+        "lzss_compressed/boat_compressed.bin",
+        "lzss_compressed/chronometer_compressed.bin",
+        "lzss_compressed/lorem_compressed.bin",
+        "lzss_compressed/mandril_compressed.bin",
+        "lzss_compressed/peppers_compressed.bin",
+    ]
 
-    # Ensure output directory exists
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    output_folder = "entropy_compressed"
+    analysis_file = os.path.join(output_folder, "compression_analysis.txt")
 
-    with open(input_path, "rb") as f:
-        data = f.read()
-
-    original_size = len(data)
-
-    encoded_data, codebook = huffman_encode(data)
-
-    encoded_bytes = int(encoded_data, 2).to_bytes((len(encoded_data) + 7) // 8, byteorder="big")
-
-    with open(output_path, "wb") as f:
-        f.write(encoded_bytes)
-
-    codebook_path = output_path + ".codebook"
-    with open(codebook_path, "w") as f:
-        for symbol, code in codebook.items():
-            f.write(f"{symbol}:{code}\n")
-
-    compressed_size = len(encoded_bytes)
-
-    analysis_path = os.path.join(os.path.dirname(output_path), "compression_analysis.txt")
-    with open(analysis_path, "w") as f:
-        f.write(f"Original file size: {original_size} bytes\n")
-        f.write(f"Compressed file size: {compressed_size} bytes\n")
-        compression_ratio = original_size / compressed_size if compressed_size > 0 else 0
-        f.write(f"Compression ratio: {compression_ratio:.2f}\n")
-
-    print(f"Huffman compression completed. Output saved to {output_path}.")
-    print(f"Codebook saved to {codebook_path}.")
-    print(f"Analysis saved to {analysis_path}.")
+    process_files(input_files, output_folder, analysis_file)
 
 
 if __name__ == "__main__":
